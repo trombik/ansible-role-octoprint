@@ -1,34 +1,11 @@
 ---
 # tasks file for ansible-role-octoprint
 
-- include_vars: "{{ ansible_os_family }}.yml"
+- name: "Include vars/{{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}.yml"
 
-- include: "install-{{ ansible_os_family }}.yml"
-
-- name: Create log directory
-  file:
-    path: "{{ octoprint_log_dir }}"
-    mode: 0755
-    owner: "{{ octoprint_user }}"
-    group: "{{ octoprint_group }}"
-    state: directory
-  notify: Restart octoprint
-
-- name: Create db directory
-  file:
-    path: "{{ octoprint_db_dir }}"
-    mode: 0755
-    owner: "{{ octoprint_user }}"
-    group: "{{ octoprint_group }}"
-    state: directory
-  notify: Restart octoprint
-
-- name: Create octoprint.conf
-  template:
-    src: octoprint.conf.j2
-    dest: "{{ octoprint_conf_file }}"
-    validate: echo %s
-  notify: Restart octoprint
+- name: "Include install-{{ ansible_os_family }}.yml"
+  include: "install-{{ ansible_os_family }}.yml"
 
 - name: Start octoprint
   service:

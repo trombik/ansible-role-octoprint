@@ -1,6 +1,7 @@
 ---
 - hosts: localhost
   roles:
+    - role: trombik.virtualenv
     - ansible-role-octoprint
   vars:
     octoprint_config: ""

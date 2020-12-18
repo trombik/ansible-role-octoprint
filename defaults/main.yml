@@ -1,9 +1,10 @@
 ---
-octoprint_user: octoprint
-octoprint_group: octoprint
-octoprint_log_dir: /var/log/octoprint
-octoprint_db_dir: "{{ __octoprint_db_dir }}"
-octoprint_service: octoprint
-octoprint_conf_dir: "{{ __octoprint_conf_dir }}"
-octoprint_conf_file: "{{ __octoprint_conf_dir }}/octoprint.conf"
+octoprint_user: "{{ __octoprint_user }}"
+octoprint_group: "{{ __octoprint_group }}"
+octoprint_extra_groups: "{{ __octoprint_extra_groups }}"
+octoprint_package: "{{ __octoprint_package }}"
+octoprint_extra_packages: "{{ __octoprint_extra_packages }}"
+octoprint_home_dir: "{{ __octoprint_home_dir }}"
+octoprint_dir: "{{ octoprint_home_dir }}/octoprint"
+octoprint_service: "{{ __octoprint_service }}"
 octoprint_flags: ""

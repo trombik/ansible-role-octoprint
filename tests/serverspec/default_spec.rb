@@ -1,48 +1,58 @@
 require "spec_helper"
 require "serverspec"
 
-package = "octoprint"
 service = "octoprint"
-config  = "/etc/octoprint/octoprint.conf"
-user    = "octoprint"
-group   = "octoprint"
-ports   = [PORTS]
-log_dir = "/var/log/octoprint"
-db_dir  = "/var/lib/octoprint"
+user    = case os[:family]
+          when "openbsd"
+            "_octoprint"
+          else
+            "octoprint"
+          end
+group   = user
+groups  = case os[:family]
+          when "freebsd"
+            ["dialer"]
+          else
 
-case os[:family]
-when "freebsd"
-  config = "/usr/local/etc/octoprint.conf"
-  db_dir = "/var/db/octoprint"
-end
+            # linux
+            ["dialout"]
+          end
+ports   = [5000]
+home_dir = case os[:family]
+           when "freebsd"
+             "/usr/local/octoprint"
+           end
 
-describe package(package) do
-  it { should be_installed }
-end
-
-describe file(config) do
-  it { should be_file }
-  its(:content) { should match Regexp.escape("octoprint") }
-end
-
-describe file(log_dir) do
+describe file(home_dir) do
   it { should exist }
-  it { should be_mode 755 }
+  it { should be_directory }
   it { should be_owned_by user }
   it { should be_grouped_into group }
 end
 
-describe file(db_dir) do
+describe user(user) do
   it { should exist }
-  it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
+  it { should belong_to_primary_group group }
+  groups.each do |g|
+    it { should belong_to_group g }
+  end
+  it { should have_home_directory home_dir }
 end
 
 case os[:family]
 when "freebsd"
   describe file("/etc/rc.conf.d/octoprint") do
+    it { should exist }
     it { should be_file }
+    it { should be_mode 644 }
+    its(:content) { should match(/Managed by ansible/) }
+  end
+
+  describe file "/usr/local/etc/rc.d/#{service}" do
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 755 }
+    its(:content) { should match(/Managed by ansible/) }
   end
 end
 
@@ -55,4 +65,9 @@ ports.each do |p|
   describe port(p) do
     it { should be_listening }
   end
+end
+
+describe command "curl -s http://127.0.0.1:5000" do
+  its(:exit_status) { should eq 0 }
+  its(:stdout) { should match(%r{<title .*OctoPrint.*</title>}) }
 end

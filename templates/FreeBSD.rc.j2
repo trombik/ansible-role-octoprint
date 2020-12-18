@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# $FreeBSD$
+#
+# Managed by ansible
+
+# PROVIDE: octoprint
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name=octoprint
+rcvar=${name}_enable
+desc="3D printer server"
+
+load_rc_config "${name}"
+
+: ${octoprint_enable:="NO"}
+: ${octoprint_user:="octoprint"}
+: ${octoprint_group:="octoprint"}
+: ${octoprint_listen_addr:="0.0.0.0:4747"}
+: ${octoprint_extra_flags:=""}
+
+pidfile=/var/run/octoprint.pid
+procname="{{ octoprint_dir }}/bin/octoprint"
+command="/usr/sbin/daemon"
+command_args="-Sf -p ${pidfile} ${procname} serve ${octoprint_extra_flags}"
+octoprint_env="LANG=en_US.UTF-8 HOME={{ octoprint_home_dir }} VIRTUAL_ENV={{ octoprint_dir }} PATH={{ octoprint_dir }}/bin:${PATH}:/usr/local/sbin:/usr/local/bin"
+octoprint_chdir="{{ octoprint_dir }}"
+command_interpreter={{ octoprint_dir }}/bin/python3
+
+octoprint_startprecmd()
+{
+	if [ ! -e ${pidfile} ]; then
+		install -o ${octoprint_user} -g ${octoprint_group} /dev/null ${pidfile};
+	fi
+}
+start_precmd=octoprint_startprecmd
+run_rc_command "$1"

@@ -1,6 +1,43 @@
 ---
 
+- name: Create octoprint_group
+  group:
+    name: "{{ octoprint_group }}"
+
+- name: Create octoprint_user
+  user:
+    name: "{{ octoprint_user }}"
+    group: "{{ octoprint_group }}"
+    groups: "{{ octoprint_extra_groups }}"
+    home: "{{ octoprint_home_dir }}"
+    create_home: yes
+    comment: "{{ octoprint_user }}"
+
 - name: Install octoprint
-  pkgng:
-    name: octoprint
+  pip:
+    virtualenv: "{{ octoprint_dir }}"
+    name: "{{ octoprint_package }}"
     state: present
+  become: yes
+  become_user: "{{ octoprint_user }}"
+  # XXX sudo specific
+  become_flags: -H
+
+- name: Create rc.d/octoprint
+  template:
+    src: FreeBSD.rc.j2
+    dest: "/usr/local/etc/rc.d/{{ octoprint_service }}"
+    mode: "0755"
+    validate: sh -n %s
+
+- name: "Create /etc/rc.conf.d/{{ octoprint_service }}"
+  template:
+    src: FreeBSD.rc.conf.j2
+    dest: "/etc/rc.conf.d/{{ octoprint_service }}"
+    mode: "0644"
+    validate: sh -n %s
+
+- name: Enable octoprint_service
+  service:
+    name: "{{ octoprint_service }}"
+    enabled: yes
