@@ -1,16 +1,57 @@
-# ansible-role-octoprint
+# `trombik.octoprint`
 
-A brief description of the role goes here.
+`ansible` role for `octoprint`.
 
 # Requirements
 
-None
+- Python environment
+- `virtualenv`
+
+The role assumes `sudo` is used for `become_method` in `ansible`.
 
 # Role Variables
 
-| variable | description | default |
+| Variable | Description | Default |
 |----------|-------------|---------|
+| `octoprint_user` | User name of `octoprint` | `{{ __octoprint_user }}` |
+| `octoprint_group` | Group name of `octoprint` | `{{ __octoprint_group }}` |
+| `octoprint_extra_groups` | List of extra groups that `octoprint` user belongs to | `{{ __octoprint_extra_groups }}` |
+| `octoprint_package` | Package name of `octoprint` | `{{ __octoprint_package }}` |
+| `octoprint_extra_packages` | List of extra packages to install | `{{ __octoprint_extra_packages }}` |
+| `octoprint_home_dir` | Path to `$HOME` of `octoprint` user | `{{ __octoprint_home_dir }}` |
+| `octoprint_dir` | Path to directory where `octoprint` is installed | `{{ octoprint_home_dir }}/octoprint` |
+| `octoprint_service` | Service name of `octoprint` | `{{ __octoprint_service }}` |
+| `octoprint_flags` | Additional flags for `octoprint` command (see below) | `""` |
 
+## `octoprint_flags`
+
+On FreeBSD, the content of `/etc/rc.conf.d/octoprint`.
+
+On Ubuntu, the content of `/etc/default/octoprint`.
+
+## Debian
+
+| Variable | Default |
+|----------|---------|
+| `__octoprint_user` | `octoprint` |
+| `__octoprint_group` | `octoprint` |
+| `__octoprint_extra_groups` | `["dialout"]` |
+| `__octoprint_package` | `octoprint` |
+| `__octoprint_extra_packages` | `["python3-dev", "build-essential"]` |
+| `__octoprint_home_dir` | `/home/octoprint` |
+| `__octoprint_service` | `octoprint` |
+
+## FreeBSD
+
+| Variable | Default |
+|----------|---------|
+| `__octoprint_user` | `octoprint` |
+| `__octoprint_group` | `octoprint` |
+| `__octoprint_extra_groups` | `["dialer"]` |
+| `__octoprint_package` | `octoprint` |
+| `__octoprint_extra_packages` | `[]` |
+| `__octoprint_home_dir` | `/usr/local/octoprint` |
+| `__octoprint_service` | `octoprint` |
 
 # Dependencies
 
