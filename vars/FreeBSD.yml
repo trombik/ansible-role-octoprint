@@ -1,0 +1,3 @@
+---
+__octoprint_db_dir: /var/db/octoprint
+__octoprint_conf_dir: /usr/local/etc/octoprint

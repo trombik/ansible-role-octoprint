@@ -1,0 +1,6 @@
+---
+
+- name: Install octoprint
+  pkgng:
+    name: octoprint
+    state: present

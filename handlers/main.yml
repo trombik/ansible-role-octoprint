@@ -1,0 +1,6 @@
+---
+
+- name: Restart octoprint
+  service:
+    name: octoprint
+    state: restarted

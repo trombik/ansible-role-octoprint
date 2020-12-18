@@ -1,0 +1,9 @@
+---
+octoprint_user: octoprint
+octoprint_group: octoprint
+octoprint_log_dir: /var/log/octoprint
+octoprint_db_dir: "{{ __octoprint_db_dir }}"
+octoprint_service: octoprint
+octoprint_conf_dir: "{{ __octoprint_conf_dir }}"
+octoprint_conf_file: "{{ __octoprint_conf_dir }}/octoprint.conf"
+octoprint_flags: ""

@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  roles:
+    - ansible-role-octoprint
+  vars:
+    octoprint_config: ""
