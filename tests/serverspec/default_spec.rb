@@ -21,6 +21,8 @@ ports   = [5000]
 home_dir = case os[:family]
            when "freebsd"
              "/usr/local/octoprint"
+           else
+             "/home/octoprint"
            end
 
 describe file(home_dir) do
@@ -49,6 +51,19 @@ when "freebsd"
   end
 
   describe file "/usr/local/etc/rc.d/#{service}" do
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 755 }
+    its(:content) { should match(/Managed by ansible/) }
+  end
+when "ubuntu"
+  describe file("/etc/default/#{service}") do
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 644 }
+    its(:content) { should match(/Managed by ansible/) }
+  end
+  describe file("/lib/systemd/system/#{service}.service") do
     it { should exist }
     it { should be_file }
     it { should be_mode 755 }

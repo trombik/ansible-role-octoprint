@@ -14,7 +14,7 @@
     comment: "{{ octoprint_user }}"
 
 - name: Install octoprint_extra_packages
-  pkgng:
+  apt:
     name: "{{ octoprint_extra_packages }}"
     state: present
 
@@ -28,17 +28,16 @@
   # XXX sudo specific
   become_flags: -H
 
-- name: Create rc.d/octoprint
+- name: Create systemd service file
   template:
-    src: FreeBSD.rc.j2
-    dest: "/usr/local/etc/rc.d/{{ octoprint_service }}"
+    src: Debian.systemd.j2
+    dest: "/lib/systemd/system/{{ octoprint_service }}.service"
     mode: "0755"
-    validate: sh -n %s
 
-- name: "Create /etc/rc.conf.d/{{ octoprint_service }}"
+- name: "Create /etc/default/{{ octoprint_service }}"
   template:
-    src: FreeBSD.rc.conf.j2
-    dest: "/etc/rc.conf.d/{{ octoprint_service }}"
+    src: Debian.default.j2
+    dest: "/etc/default/{{ octoprint_service }}"
     mode: "0644"
     validate: sh -n %s
 

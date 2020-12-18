@@ -1,3 +1,4 @@
+# Managed by ansible
 [Unit]
 Description=The snappy web interface for your 3D printer
 After=network-online.target
@@ -6,9 +7,13 @@ Wants=network-online.target
 [Service]
 Environment="LC_ALL=C.UTF-8"
 Environment="LANG=C.UTF-8"
+Environment="HOME={{ octoprint_home_dir }}"
+Environment="VIRTUAL_ENV={{ octoprint_dir }}"
+Environment="PATH={{ octoprint_dir }}/bin:/bin:/usr/bin:/usr/local/bin"
+
 Type=simple
-User=pi
-ExecStart={{ octoprint_dir }}/bin/octoprint
+User={{ octoprint_user }}
+ExecStart={{ octoprint_dir }}/bin/octoprint serve
 
 [Install]
 WantedBy=multi-user.target

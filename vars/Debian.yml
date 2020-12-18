@@ -1,0 +1,11 @@
+---
+__octoprint_user: octoprint
+__octoprint_group: octoprint
+__octoprint_extra_groups:
+  - dialout
+__octoprint_package: octoprint
+__octoprint_extra_packages:
+  - python3-dev
+  - build-essential
+__octoprint_home_dir: /home/octoprint
+__octoprint_service: octoprint
