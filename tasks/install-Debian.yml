@@ -28,18 +28,22 @@
   # XXX sudo specific
   become_flags: -H
 
-- name: Create systemd service file
-  template:
-    src: Debian.systemd.j2
-    dest: "/lib/systemd/system/{{ octoprint_service }}.service"
-    mode: "0755"
-
 - name: "Create /etc/default/{{ octoprint_service }}"
   template:
     src: Debian.default.j2
     dest: "/etc/default/{{ octoprint_service }}"
     mode: "0644"
     validate: sh -n %s
+  notify:
+    - Restart octoprint
+
+- name: Create systemd service file
+  template:
+    src: Debian.systemd.j2
+    dest: "/lib/systemd/system/{{ octoprint_service }}.service"
+    mode: "0755"
+  notify:
+    - Restart octoprint
 
 - name: Enable octoprint_service
   service:

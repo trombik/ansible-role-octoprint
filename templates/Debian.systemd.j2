@@ -10,10 +10,11 @@ Environment="LANG=C.UTF-8"
 Environment="HOME={{ octoprint_home_dir }}"
 Environment="VIRTUAL_ENV={{ octoprint_dir }}"
 Environment="PATH={{ octoprint_dir }}/bin:/bin:/usr/bin:/usr/local/bin"
+EnvironmentFile=/etc/default/{{ octoprint_service }}
 
 Type=simple
 User={{ octoprint_user }}
-ExecStart={{ octoprint_dir }}/bin/octoprint serve
+ExecStart={{ octoprint_dir }}/bin/octoprint serve $EXTRA_FLAGS
 
 [Install]
 WantedBy=multi-user.target

@@ -60,6 +60,15 @@ None
 # Example Playbook
 
 ```yaml
+- hosts: localhost
+  roles:
+    - role: trombik.virtualenv
+    - ansible-role-octoprint
+  vars:
+    os_octoprint_flags:
+      FreeBSD: octoprint_extra_flags=-v
+      Debian: EXTRA_FLAGS=-v
+    octoprint_flags: "{{ os_octoprint_flags[ansible_os_family] }}"
 ```
 
 # License

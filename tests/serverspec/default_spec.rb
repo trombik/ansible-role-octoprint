@@ -48,6 +48,7 @@ when "freebsd"
     it { should be_file }
     it { should be_mode 644 }
     its(:content) { should match(/Managed by ansible/) }
+    its(:content) { should match(/octoprint_extra_flags=-v/) }
   end
 
   describe file "/usr/local/etc/rc.d/#{service}" do
@@ -56,19 +57,34 @@ when "freebsd"
     it { should be_mode 755 }
     its(:content) { should match(/Managed by ansible/) }
   end
+
+  describe command "ps axw" do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should be_empty }
+    its(:stdout) { should match(%r{#{home_dir}/octoprint/bin/python3\s+.+octoprint serve -v}) }
+  end
 when "ubuntu"
   describe file("/etc/default/#{service}") do
     it { should exist }
     it { should be_file }
     it { should be_mode 644 }
     its(:content) { should match(/Managed by ansible/) }
+    its(:content) { should match(/EXTRA_FLAGS=-v/) }
   end
+
   describe file("/lib/systemd/system/#{service}.service") do
     it { should exist }
     it { should be_file }
     it { should be_mode 755 }
     its(:content) { should match(/Managed by ansible/) }
   end
+
+  describe command "ps axw" do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should be_empty }
+    its(:stdout) { should match(%r{#{home_dir}/octoprint/bin/python\s+.+octoprint serve -v}) }
+  end
+
 end
 
 describe service(service) do

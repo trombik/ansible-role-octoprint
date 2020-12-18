@@ -2,5 +2,5 @@
 
 - name: Restart octoprint
   service:
-    name: octoprint
+    name: "{{ octoprint_service }}"
     state: restarted

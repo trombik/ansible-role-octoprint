@@ -4,4 +4,7 @@
     - role: trombik.virtualenv
     - ansible-role-octoprint
   vars:
-    octoprint_config: ""
+    os_octoprint_flags:
+      FreeBSD: octoprint_extra_flags=-v
+      Debian: EXTRA_FLAGS=-v
+    octoprint_flags: "{{ os_octoprint_flags[ansible_os_family] }}"

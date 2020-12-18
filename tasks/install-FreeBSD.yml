@@ -34,6 +34,8 @@
     dest: "/usr/local/etc/rc.d/{{ octoprint_service }}"
     mode: "0755"
     validate: sh -n %s
+  notify:
+    - Restart octoprint
 
 - name: "Create /etc/rc.conf.d/{{ octoprint_service }}"
   template:
@@ -41,6 +43,8 @@
     dest: "/etc/rc.conf.d/{{ octoprint_service }}"
     mode: "0644"
     validate: sh -n %s
+  notify:
+    - Restart octoprint
 
 - name: Enable octoprint_service
   service:
