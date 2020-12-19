@@ -38,5 +38,5 @@
       # vagrantup octoprint:     octoprint.util.net.IPPROTO_IPV6, octoprint.util.net.IPV6_V6ONLY, 0
       # vagrantup octoprint: OSError: [Errno 22] Invalid argument
       server:
-          host: 0.0.0.0
-          secretKey: XNOSFH7XP0cPrKNx5AQF8MysEfVjtGSQ
+        host: 0.0.0.0
+        secretKey: XNOSFH7XP0cPrKNx5AQF8MysEfVjtGSQ
