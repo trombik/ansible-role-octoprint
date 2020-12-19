@@ -28,6 +28,7 @@ The role assumes `sudo` is used for `become_method` in `ansible`.
 | `octoprint_dir` | Path to directory where `octoprint` is installed | `{{ octoprint_home_dir }}/octoprint` |
 | `octoprint_service` | Service name of `octoprint` | `{{ __octoprint_service }}` |
 | `octoprint_flags` | Additional flags for `octoprint` command (see below) | `""` |
+| `octoprint_config` | Content of `.octoprint/config.yml` | `""` |
 
 ## `octoprint_flags`
 
