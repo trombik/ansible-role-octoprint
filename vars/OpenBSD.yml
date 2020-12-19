@@ -1,0 +1,9 @@
+---
+__octoprint_user: _octoprint
+__octoprint_group: _octoprint
+__octoprint_extra_groups:
+  - dialer
+__octoprint_package: octoprint
+__octoprint_extra_packages: []
+__octoprint_home_dir: /usr/local/octoprint
+__octoprint_service: octoprint
