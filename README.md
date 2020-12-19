@@ -2,6 +2,12 @@
 
 `ansible` role for `octoprint`.
 
+This role is only useful when installing `octoprint` for the first time
+because `octoprint` modifies `config.yaml`.
+
+The role installs `octoprint` with `virtualenv`, not package system (probably
+never will).
+
 # Requirements
 
 - Python environment
@@ -29,6 +35,8 @@ On FreeBSD, the content of `/etc/rc.conf.d/octoprint`.
 
 On Ubuntu, the content of `/etc/default/octoprint`.
 
+On OpenBSD, this variable does nothing.
+
 ## Debian
 
 | Variable | Default |
@@ -53,6 +61,18 @@ On Ubuntu, the content of `/etc/default/octoprint`.
 | `__octoprint_home_dir` | `/usr/local/octoprint` |
 | `__octoprint_service` | `octoprint` |
 
+## OpenBSD
+
+| Variable | Default |
+|----------|---------|
+| `__octoprint_user` | `_octoprint` |
+| `__octoprint_group` | `_octoprint` |
+| `__octoprint_extra_groups` | `["dialer"]` |
+| `__octoprint_package` | `octoprint` |
+| `__octoprint_extra_packages` | `[]` |
+| `__octoprint_home_dir` | `/usr/local/octoprint` |
+| `__octoprint_service` | `octoprint` |
+
 # Dependencies
 
 None
@@ -60,6 +80,7 @@ None
 # Example Playbook
 
 ```yaml
+---
 - hosts: localhost
   roles:
     - role: trombik.virtualenv
@@ -68,7 +89,39 @@ None
     os_octoprint_flags:
       FreeBSD: octoprint_extra_flags=-v
       Debian: EXTRA_FLAGS=-v
+      # XXX octoprint_extra_flags does not work on OpenBSD. see
+      # tasks/install-OpenBSD.yml
+      OpenBSD: ""
     octoprint_flags: "{{ os_octoprint_flags[ansible_os_family] }}"
+    octoprint_config:
+      api:
+        key: 5636381594984F8887F63F8E0CBD4F9D
+      plugins:
+        _disabled:
+          - tracking
+        announcements:
+          _config_version: 1
+        discovery:
+          upnpUuid: a42d1309-7f45-4f59-ba85-777f511b3b3e
+        errortracking:
+          unique_id: 47891e2e-0233-4f81-8b27-a5c73b6d5786
+        gcodeviewer:
+          _config_version: 1
+        softwareupdate:
+          _config_version: 9
+        virtual_printer:
+          _config_version: 1
+      printerProfiles:
+        default: _default
+      # XXX do not bind on [::]. otherwise, octoprint fails with the following
+      # exception on OpenBSD.
+      #
+      # vagrantup octoprint:   File "/usr/local/octoprint/octoprint/lib/python3.7/site-packages/octoprint/server/__init__.py", line 2327, in __init__
+      # vagrantup octoprint:     octoprint.util.net.IPPROTO_IPV6, octoprint.util.net.IPV6_V6ONLY, 0
+      # vagrantup octoprint: OSError: [Errno 22] Invalid argument
+      server:
+          host: 0.0.0.0
+          secretKey: XNOSFH7XP0cPrKNx5AQF8MysEfVjtGSQ
 ```
 
 # License

@@ -10,7 +10,7 @@ user    = case os[:family]
           end
 group   = user
 groups  = case os[:family]
-          when "freebsd"
+          when "freebsd", "openbsd"
             ["dialer"]
           else
 
@@ -19,11 +19,12 @@ groups  = case os[:family]
           end
 ports   = [5000]
 home_dir = case os[:family]
-           when "freebsd"
+           when "freebsd", "openbsd"
              "/usr/local/octoprint"
            else
              "/home/octoprint"
            end
+config_dir = "#{home_dir}/.octoprint"
 
 describe file(home_dir) do
   it { should exist }
@@ -63,6 +64,20 @@ when "freebsd"
     its(:stderr) { should be_empty }
     its(:stdout) { should match(%r{#{home_dir}/octoprint/bin/python3\s+.+octoprint serve -v}) }
   end
+when "openbsd"
+  describe file "/etc/rc.d/octoprint" do
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 755 }
+    its(:content) { should match(/Managed by ansible/) }
+  end
+
+  describe file "/etc/rc.conf.local" do
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 644 }
+    its(:content) { should match(/pkg_scripts=#{service}$/) }
+  end
 when "ubuntu"
   describe file("/etc/default/#{service}") do
     it { should exist }
@@ -84,7 +99,23 @@ when "ubuntu"
     its(:stderr) { should be_empty }
     its(:stdout) { should match(%r{#{home_dir}/octoprint/bin/python\s+.+octoprint serve -v}) }
   end
+end
 
+describe file config_dir do
+  it { should exist }
+  it { should be_directory }
+  it { should be_mode 700 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+end
+
+describe file "#{config_dir}/config.yaml" do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 640 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+  its(:content) { should match(/key:\s+5636381594984F8887F63F8E0CBD4F9D/) }
 end
 
 describe service(service) do

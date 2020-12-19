@@ -1,0 +1,17 @@
+#!/bin/ksh
+# Managed by ansible
+
+daemon="{{ octoprint_dir }}/bin/octoprint"
+daemon_user="{{ octoprint_user }}"
+
+. /etc/rc.d/rc.subr
+
+pexp="{{ octoprint_dir }}/bin/python3 ${daemon} serve${daemon_flags:+ ${daemon_flags}}"
+
+rc_reload=NO
+
+rc_start() {
+	${rcexec} "cd {{ octoprint_dir }}; env HOME={{ octoprint_home_dir }} VIRTUAL_ENV={{ octoprint_dir }} PATH=/usr/local/octoprint/octoprint/bin:${PATH} ${daemon} serve ${daemon_flags} 2>&1 | logger -t {{ octoprint_service }} &"
+}
+
+rc_cmd $1

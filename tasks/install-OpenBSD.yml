@@ -1,0 +1,46 @@
+---
+
+- name: Create octoprint_group
+  group:
+    name: "{{ octoprint_group }}"
+
+- name: Create octoprint_user
+  user:
+    name: "{{ octoprint_user }}"
+    group: "{{ octoprint_group }}"
+    groups: "{{ octoprint_extra_groups }}"
+    home: "{{ octoprint_home_dir }}"
+    create_home: yes
+    comment: "{{ octoprint_user }}"
+
+- name: Install octoprint_extra_packages
+  openbsd_pkg:
+    name: "{{ octoprint_extra_packages }}"
+    state: present
+
+- name: Install octoprint
+  pip:
+    virtualenv: "{{ octoprint_dir }}"
+    name: "{{ octoprint_package }}"
+    state: present
+  become: yes
+  become_user: "{{ octoprint_user }}"
+  # XXX sudo specific
+  become_flags: -H
+
+- name: Create rc.d/octoprint
+  template:
+    src: OpenBSD.rc.j2
+    dest: "/etc/rc.d/{{ octoprint_service }}"
+    mode: "0755"
+  notify:
+    - Restart octoprint
+
+- name: Enable octoprint_service
+  service:
+    name: "{{ octoprint_service }}"
+    enabled: yes
+    # XXX disable arguments here because openbsd_pkg has had bugs in arguments.
+    # arguments: "{{ octoprint_flags }}"
+  notify:
+    - Restart octoprint

@@ -7,6 +7,24 @@
 - name: "Include install-{{ ansible_os_family }}.yml"
   include: "install-{{ ansible_os_family }}.yml"
 
+- name: Create .octoprint
+  file:
+    path: "{{ octoprint_home_dir }}/.octoprint"
+    owner: "{{ octoprint_user }}"
+    group: "{{ octoprint_group }}"
+    mode: "0700"
+    state: directory
+
+- name: Create .octoprint/config.yaml
+  template:
+    src: config.yaml.j2
+    dest: "{{ octoprint_home_dir }}/.octoprint/config.yaml"
+    owner: "{{ octoprint_user }}"
+    group: "{{ octoprint_group }}"
+    mode: "0640"
+  notify:
+    - Restart octoprint
+
 - name: Start octoprint
   service:
     name: "{{ octoprint_service }}"
