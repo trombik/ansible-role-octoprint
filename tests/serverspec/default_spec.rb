@@ -18,6 +18,7 @@ groups  = case os[:family]
             ["dialout"]
           end
 ports   = [5000]
+octoprint_users = %w[root foo]
 home_dir = case os[:family]
            when "freebsd", "openbsd"
              "/usr/local/octoprint"
@@ -118,6 +119,24 @@ describe file "#{config_dir}/config.yaml" do
   its(:content) { should match(/key:\s+5636381594984F8887F63F8E0CBD4F9D/) }
 end
 
+describe file "#{config_dir}/users.yaml" do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 600 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+  its(:content) { should match(/password:\s+accdeb2c4cf9536eba1bbc07d4128762d3391dc67a55b020c008fde5d0a6fb12605e090cd19da33a60d5ec850bb36c0328069834cb0013666ba9ccf2add83b4f/) }
+end
+
+describe file "#{config_dir}/data/appkeys/keys.yaml" do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 640 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+  its(:content) { should match(/api_key:\s+B9B058659A154060833F317BD947A030/) }
+end
+
 describe service(service) do
   it { should be_running }
   it { should be_enabled }
@@ -131,5 +150,5 @@ end
 
 describe command "curl -s http://127.0.0.1:5000" do
   its(:exit_status) { should eq 0 }
-  its(:stdout) { should match(%r{<title .*OctoPrint.*</title>}) }
+  its(:stdout) { should match(%r{<title>Redirecting\.\.\.</title>}) }
 end

@@ -15,15 +15,36 @@
     mode: "0700"
     state: directory
 
-- name: Create .octoprint/config.yaml
-  template:
-    src: config.yaml.j2
-    dest: "{{ octoprint_home_dir }}/.octoprint/config.yaml"
+- name: Create directory for octoprint_yaml_files
+  file:
+    path: "{{ octoprint_home_dir }}/.octoprint/{{ item['path'] | dirname }}"
     owner: "{{ octoprint_user }}"
     group: "{{ octoprint_group }}"
-    mode: "0640"
+    state: directory
+  with_items: "{{ octoprint_yaml_files }}"
+  when:
+    - ('state' in item and item['state'] == 'present') or (not 'state' in item)
+
+- name: Create octoprint_yaml_files
+  template:
+    src: yaml.j2
+    dest: "{{ octoprint_home_dir }}/.octoprint/{{ item['path'] }}"
+    owner: "{{ octoprint_user }}"
+    group: "{{ octoprint_group }}"
+    mode: "{% if 'mode' in item %}{{ item['mode'] }}{% else %}0600{% endif %}"
+  with_items: "{{ octoprint_yaml_files }}"
+  when:
+    - ('state' in item and item['state'] == 'present') or (not 'state' in item)
   notify:
     - Restart octoprint
+
+- name: Delete octoprint_yaml_files
+  file:
+    path: "{{ octoprint_home_dir }}/.octoprint/{{ item.['path'] }}"
+    state: absent
+  with_items: "{{ octoprint_yaml_files }}"
+  when:
+    - "'state' in item and item['state'] == 'absent'"
 
 - name: Start octoprint
   service:

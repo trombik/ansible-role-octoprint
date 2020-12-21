@@ -8,4 +8,4 @@ octoprint_home_dir: "{{ __octoprint_home_dir }}"
 octoprint_dir: "{{ octoprint_home_dir }}/octoprint"
 octoprint_service: "{{ __octoprint_service }}"
 octoprint_flags: ""
-octoprint_config: ""
+octoprint_yaml_files: []

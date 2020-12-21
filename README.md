@@ -28,7 +28,7 @@ The role assumes `sudo` is used for `become_method` in `ansible`.
 | `octoprint_dir` | Path to directory where `octoprint` is installed | `{{ octoprint_home_dir }}/octoprint` |
 | `octoprint_service` | Service name of `octoprint` | `{{ __octoprint_service }}` |
 | `octoprint_flags` | Additional flags for `octoprint` command (see below) | `""` |
-| `octoprint_config` | Content of `.octoprint/config.yml` | `""` |
+| `octoprint_yaml_files` | List of configuration files in `YAML` format (see below) | `[]` |
 
 ## `octoprint_flags`
 
@@ -37,6 +37,17 @@ On FreeBSD, the content of `/etc/rc.conf.d/octoprint`.
 On Ubuntu, the content of `/etc/default/octoprint`.
 
 On OpenBSD, this variable does nothing.
+
+## `octoprint_yaml_files`
+
+A list of configuration files in `YAML` format.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `path` | Relative path from `octoprint_home_dir/.octoprint` | Yes |
+| `mode` | Permission of the file | No |
+| `content` | The content of the file | No |
+| `state` | Either `present` or `absent` | No |
 
 ## Debian
 
