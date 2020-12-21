@@ -47,11 +47,15 @@
   register: __octoprint_create_systemd_file
   notify:
     - Restart octoprint
+  # XXX this does not support non-systemd distribution, such as Devuan
+  when:
+    - ansible_service_mgr == 'systemd'
 
 - name: Reload systemd
   systemd:
     daemon_reload: yes
   when:
+    - ansible_service_mgr == 'systemd'
     - __octoprint_create_systemd_file.changed
 
 - name: Enable octoprint_service
