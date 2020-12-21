@@ -26,6 +26,7 @@ The role assumes `sudo` is used for `become_method` in `ansible`.
 | `octoprint_extra_packages` | List of extra packages to install | `{{ __octoprint_extra_packages }}` |
 | `octoprint_home_dir` | Path to `$HOME` of `octoprint` user | `{{ __octoprint_home_dir }}` |
 | `octoprint_dir` | Path to directory where `octoprint` is installed | `{{ octoprint_home_dir }}/octoprint` |
+| `octoprint_config_dir` | Path to configuration directory | `{{ octoprint_home_dir }}/.octoprint` |
 | `octoprint_service` | Service name of `octoprint` | `{{ __octoprint_service }}` |
 | `octoprint_flags` | Additional flags for `octoprint` command (see below) | `""` |
 | `octoprint_yaml_files` | List of configuration files in `YAML` format (see below) | `[]` |
@@ -105,35 +106,60 @@ None
       # tasks/install-OpenBSD.yml
       OpenBSD: ""
     octoprint_flags: "{{ os_octoprint_flags[ansible_os_family] }}"
-    octoprint_config:
-      api:
-        key: 5636381594984F8887F63F8E0CBD4F9D
-      plugins:
-        _disabled:
-          - tracking
-        announcements:
-          _config_version: 1
-        discovery:
-          upnpUuid: a42d1309-7f45-4f59-ba85-777f511b3b3e
-        errortracking:
-          unique_id: 47891e2e-0233-4f81-8b27-a5c73b6d5786
-        gcodeviewer:
-          _config_version: 1
-        softwareupdate:
-          _config_version: 9
-        virtual_printer:
-          _config_version: 1
-      printerProfiles:
-        default: _default
-      # XXX do not bind on [::]. otherwise, octoprint fails with the following
-      # exception on OpenBSD.
-      #
-      # vagrantup octoprint:   File "/usr/local/octoprint/octoprint/lib/python3.7/site-packages/octoprint/server/__init__.py", line 2327, in __init__
-      # vagrantup octoprint:     octoprint.util.net.IPPROTO_IPV6, octoprint.util.net.IPV6_V6ONLY, 0
-      # vagrantup octoprint: OSError: [Errno 22] Invalid argument
-      server:
-          host: 0.0.0.0
-          secretKey: XNOSFH7XP0cPrKNx5AQF8MysEfVjtGSQ
+    octoprint_yaml_files:
+      - path: data/appkeys/keys.yaml
+        mode: "0640"
+        content:
+          - api_key: B9B058659A154060833F317BD947A030
+            app_id: cura
+      - path: users.yaml
+        content:
+          root:
+            active: true
+            apikey: null
+            groups:
+              - admins
+              - users
+            # root
+            password: accdeb2c4cf9536eba1bbc07d4128762d3391dc67a55b020c008fde5d0a6fb12605e090cd19da33a60d5ec850bb36c0328069834cb0013666ba9ccf2add83b4f
+            permissions: []
+            roles:
+              - user
+              - admin
+            settings:
+              interface:
+                language: en
+      - path: config.yaml
+        mode: "0640"
+        content:
+          api:
+            key: 5636381594984F8887F63F8E0CBD4F9D
+          plugins:
+            _disabled:
+              - tracking
+            announcements:
+              _config_version: 1
+            discovery:
+              upnpUuid: a42d1309-7f45-4f59-ba85-777f511b3b3e
+            errortracking:
+              unique_id: 47891e2e-0233-4f81-8b27-a5c73b6d5786
+            gcodeviewer:
+              _config_version: 1
+            softwareupdate:
+              _config_version: 9
+            virtual_printer:
+              _config_version: 1
+          printerProfiles:
+            default: _default
+          # XXX do not bind on [::]. otherwise, octoprint fails with the following
+          # exception on OpenBSD.
+          #
+          # vagrantup octoprint:   File "/usr/local/octoprint/octoprint/lib/python3.7/site-packages/octoprint/server/__init__.py", line 2327, in __init__
+          # vagrantup octoprint:     octoprint.util.net.IPPROTO_IPV6, octoprint.util.net.IPV6_V6ONLY, 0
+          # vagrantup octoprint: OSError: [Errno 22] Invalid argument
+          server:
+            host: 0.0.0.0
+            secretKey: XNOSFH7XP0cPrKNx5AQF8MysEfVjtGSQ
 ```
 
 # License
