@@ -7,9 +7,9 @@
 - name: "Include install-{{ ansible_os_family }}.yml"
   include: "install-{{ ansible_os_family }}.yml"
 
-- name: Create .octoprint
+- name: Create octoprint_config_dir
   file:
-    path: "{{ octoprint_home_dir }}/.octoprint"
+    path: "{{ octoprint_config_dir }}"
     owner: "{{ octoprint_user }}"
     group: "{{ octoprint_group }}"
     mode: "0700"
@@ -17,7 +17,7 @@
 
 - name: Create directory for octoprint_yaml_files
   file:
-    path: "{{ octoprint_home_dir }}/.octoprint/{{ item['path'] | dirname }}"
+    path: "{{ octoprint_config_dir }}/{{ item['path'] | dirname }}"
     owner: "{{ octoprint_user }}"
     group: "{{ octoprint_group }}"
     state: directory
@@ -28,7 +28,7 @@
 - name: Create octoprint_yaml_files
   template:
     src: yaml.j2
-    dest: "{{ octoprint_home_dir }}/.octoprint/{{ item['path'] }}"
+    dest: "{{ octoprint_config_dir }}/{{ item['path'] }}"
     owner: "{{ octoprint_user }}"
     group: "{{ octoprint_group }}"
     mode: "{% if 'mode' in item %}{{ item['mode'] }}{% else %}0600{% endif %}"
@@ -40,7 +40,7 @@
 
 - name: Delete octoprint_yaml_files
   file:
-    path: "{{ octoprint_home_dir }}/.octoprint/{{ item.['path'] }}"
+    path: "{{ octoprint_config_dir }}/{{ item.['path'] }}"
     state: absent
   with_items: "{{ octoprint_yaml_files }}"
   when:
