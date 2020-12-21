@@ -126,6 +126,14 @@ describe file "#{config_dir}/users.yaml" do
   it { should be_owned_by user }
   it { should be_grouped_into group }
   its(:content) { should match(/password:\s+accdeb2c4cf9536eba1bbc07d4128762d3391dc67a55b020c008fde5d0a6fb12605e090cd19da33a60d5ec850bb36c0328069834cb0013666ba9ccf2add83b4f/) }
+
+  octoprint_users.each do |octoprint_user|
+    content = Specinfra.backend.run_command("cat #{config_dir}/users.yaml").stdout
+    users = Psych.safe_load(content)
+    it "has user `#{octoprint_user}`" do
+      expect(users.key?(octoprint_user)).to be true
+    end
+  end
 end
 
 describe file "#{config_dir}/data/appkeys/keys.yaml" do

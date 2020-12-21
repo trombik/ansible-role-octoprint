@@ -34,6 +34,19 @@
             settings:
               interface:
                 language: en
+          foo:
+            active: true
+            apikey: null
+            groups:
+              - users
+            # password
+            password: 883177bbe321469c24a3ad6f5a55710da8098fafe398549b920376804121013d8fa004bcc727b8c0493858184b04272c3da9c75c7e6eebdcc6de8b5f31846d13
+            permissions: []
+            roles:
+              - user
+            settings:
+              interface:
+                language: en
       - path: config.yaml
         mode: "0640"
         content:
