@@ -1,3 +1,9 @@
+## Release 2.0.1
+
+* bdcda4f bugfix: add a guard `when` on Debian family
+* 109a54f bugfix: reload systemd
+* a454c0c bugfix: always enable ansible_ssh_pipelining when becoming
+
 ## Release 2.0.0
 
 * 62b31fb doc: update README
