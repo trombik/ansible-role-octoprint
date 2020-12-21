@@ -44,8 +44,15 @@
     src: Debian.systemd.j2
     dest: "/lib/systemd/system/{{ octoprint_service }}.service"
     mode: "0755"
+  register: __octoprint_create_systemd_file
   notify:
     - Restart octoprint
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+  when:
+    - __octoprint_create_systemd_file.changed
 
 - name: Enable octoprint_service
   service:
