@@ -15,6 +15,8 @@ never will).
 
 The role assumes `sudo` is used for `become_method` in `ansible`.
 
+The role assumes `systemd` is used on Debian family.
+
 # Role Variables
 
 | Variable | Description | Default |
