@@ -6,6 +6,7 @@ octoprint_package: "{{ __octoprint_package }}"
 octoprint_extra_packages: "{{ __octoprint_extra_packages }}"
 octoprint_home_dir: "{{ __octoprint_home_dir }}"
 octoprint_dir: "{{ octoprint_home_dir }}/octoprint"
+octoprint_config_dir: "{{ octoprint_home_dir }}/.octoprint"
 octoprint_service: "{{ __octoprint_service }}"
 octoprint_flags: ""
 octoprint_yaml_files: []
