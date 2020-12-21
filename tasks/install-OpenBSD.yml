@@ -26,7 +26,9 @@
   become: yes
   become_user: "{{ octoprint_user }}"
   # XXX sudo specific
-  become_flags: -H
+  become_flags: -H -S
+  vars:
+    ansible_ssh_pipelining: true
 
 - name: Create rc.d/octoprint
   template:
